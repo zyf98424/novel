@@ -59,22 +59,30 @@ function load() {
                             return arguments[2] + 1;
                         }
                     },
-                                                                        {
-                                field: 'id',
-                                title: '主键'
-                            },
+                            //                                             {
+                            //     field: 'id',
+                            //     title: '主键'
+                            // },
 
                         
                                                                         {
                                 field: 'workDirection',
-                                title: '作品方向，0：男频，1：女频'
+                                title: '作品方向',
+                                align : 'center',
+                                formatter:function (value) {
+                                if (value=="0"){
+                                    return '<span class="label label-danger">男频</span>';
+                                }else if (value == '1') {
+                                    return '<span class="label label-primary">女频</span>';
+                                }
+                              }
                             },
 
                         
-                                                                        {
-                                field: 'catId',
-                                title: '分类ID'
-                            },
+                            //                                             {
+                            //     field: 'catId',
+                            //     title: '分类ID'
+                            // },
 
                         
                                                                         {
@@ -83,10 +91,10 @@ function load() {
                             },
 
                         
-                                                                        {
-                                field: 'picUrl',
-                                title: '小说封面'
-                            },
+                                                                        // {
+                            //     field: 'picUrl',
+                            //     title: '小说封面'
+                            // },
 
                         
                                                                         {
@@ -95,10 +103,10 @@ function load() {
                             },
 
                         
-                                                                        {
-                                field: 'authorId',
-                                title: '作者id'
-                            },
+                            //                                             {
+                            //     field: 'authorId',
+                            //     title: '作者id'
+                            // },
 
                         
                                                                         {
@@ -115,15 +123,20 @@ function load() {
                         
                                                                         {
                                 field: 'score',
-                                title: '评分，预留字段'
+                                title: '评分'
                             },
 
                         
                                                                         {
                                 field: 'bookStatus',
-                                title: '书籍状态，0：连载中，1：已完结',
-                                formatter: function (value, row, index) {
-                                    return formatDict("${column.dictType}", value);
+                                title: '状态',
+                                align : 'center',
+                                formatter:function (value) {
+                                    if (value=="0"){
+                                        return '<span class="label label-danger">连载中</span>';
+                                    }else if (value == '1') {
+                                        return '<span class="label label-primary">已完结</span>';
+                                    }
                                 }
                             },
                         
@@ -151,10 +164,10 @@ function load() {
                             },
 
                         
-                                                                        {
-                                field: 'lastIndexId',
-                                title: '最新目录ID'
-                            },
+                            //                                             {
+                            //     field: 'lastIndexId',
+                            //     title: '最新目录ID'
+                            // },
 
                         
                                                                         {
@@ -171,42 +184,50 @@ function load() {
                         
                                                                         {
                                 field: 'isVip',
-                                title: '是否收费，1：收费，0：免费',
+                                title: '是否收费',
                                 formatter: function (value, row, index) {
-                                    return formatDict("${column.dictType}", value);
+                                    if (value == '0') {
+                                        return '<span class="label label-danger">收费</span>';
+                                    } else if (value == '1') {
+                                        return '<span class="label label-default">免费</span>';
+                                    }
                                 }
                             },
                         
                                                                         {
                                 field: 'status',
-                                title: '状态，0：入库，1：上架',
+                                title: '状态',
                                 formatter: function (value, row, index) {
-                                    return formatDict("${column.dictType}", value);
+                                    if (value == '0') {
+                                        return '<span class="label label-danger">入库</span>';
+                                    } else if (value == '1') {
+                                        return '<span class="label label-default">上架</span>';
+                                    }
                                 }
                             },
                         
-                                                                        {
-                                field: 'updateTime',
-                                title: '更新时间'
-                            },
+                            //                                             {
+                            //     field: 'updateTime',
+                            //     title: '更新时间'
+                            // },
 
                         
-                                                                        {
-                                field: 'createTime',
-                                title: '创建时间'
-                            },
+                            //                                             {
+                            //     field: 'createTime',
+                            //     title: '创建时间'
+                            // },
 
                         
-                                                                        {
-                                field: 'crawlSourceId',
-                                title: '爬虫源站ID'
-                            },
+                            //                                             {
+                            //     field: 'crawlSourceId',
+                            //     title: '爬虫源站ID'
+                            // },
 
                         
-                                                                        {
-                                field: 'crawlBookId',
-                                title: '抓取的源站小说ID'
-                            },
+                            //                                             {
+                            //     field: 'crawlBookId',
+                            //     title: '抓取的源站小说ID'
+                            // },
 
                         
                                                                         {
@@ -217,9 +238,13 @@ function load() {
                         
                                                                         {
                                 field: 'crawlIsStop',
-                                title: '是否已停止更新，0：未停止，1：已停止',
+                                title: '是否已停止更新',
                                 formatter: function (value, row, index) {
-                                    return formatDict("${column.dictType}", value);
+                                    if (value == '0') {
+                                        return '<span class="label label-danger">未停止</span>';
+                                    } else if (value == '1') {
+                                        return '<span class="label label-primary">已停止</span>';
+                                    }
                                 }
                             },
                         
