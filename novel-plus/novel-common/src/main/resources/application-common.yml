@@ -15,6 +15,7 @@ spring:
 cache:
   type: ehcache
 
+
 mybatis:
   configuration:
     #自动将数据库带下划线的表字段值映射到Java类的驼峰字段上
