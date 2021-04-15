@@ -42,7 +42,7 @@ public class PageController extends BaseController {
 
     private final ThreadPoolExecutor threadPoolExecutor;
 
-
+  
     @RequestMapping("{url}.html")
     public String module(@PathVariable("url") String url) {
         return url;
