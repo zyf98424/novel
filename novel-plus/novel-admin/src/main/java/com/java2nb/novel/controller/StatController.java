@@ -6,6 +6,7 @@ import com.java2nb.novel.service.AuthorService;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.service.PayService;
 import com.java2nb.novel.service.UserService;
+import com.java2nb.system.service.ViewsService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,6 +42,8 @@ public class StatController {
 
     @Autowired
     private PayService orderPayService;
+    @Autowired
+    private ViewsService viewsService;
 
 
     @ResponseBody
@@ -68,11 +71,13 @@ public class StatController {
         Map<Object,Object> bookTableSta = bookService.tableSta(minDate);
         Map<Object,Object> authorTableSta = authorService.tableSta(minDate);
         Map<Object,Object> orderTableSta = orderPayService.tableSta(minDate);
+        Map<Object,Object> viewsTableSta = viewsService.tableSta(minDate);
         return R.ok().put("dateList",dateList)
                 .put("userTableSta",userTableSta)
                 .put("bookTableSta",bookTableSta)
                 .put("authorTableSta",authorTableSta)
                 .put("orderTableSta",orderTableSta)
+                .put("viewsTableSta",viewsTableSta)
                 ;
     }
 

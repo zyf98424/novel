@@ -5,18 +5,25 @@ import com.java2nb.novel.core.bean.PageBean;
 import com.java2nb.novel.core.bean.ResultBean;
 import com.java2nb.novel.core.bean.UserDetails;
 import com.java2nb.novel.core.enums.ResponseStatus;
+import com.java2nb.novel.core.utils.ViewsDO;
 import com.java2nb.novel.entity.Book;
 import com.java2nb.novel.entity.BookComment;
+import com.java2nb.novel.service.ViewsService;
 import com.java2nb.novel.vo.BookSpVO;
 import com.java2nb.novel.service.BookService;
 import com.java2nb.novel.vo.BookVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +37,7 @@ import java.util.Map;
 public class BookController extends BaseController{
 
     private final BookService bookService;
-
+    private final ViewsService viewsService;
     private final RabbitTemplate rabbitTemplate;
 
     @Value("${spring.rabbitmq.enable}")
@@ -41,7 +48,8 @@ public class BookController extends BaseController{
      * 查询首页小说设置列表数据
      * */
     @GetMapping("listBookSetting")
-    public ResultBean listBookSetting(){
+    public ResultBean listBookSetting(HttpServletRequest request){
+        getIp(request);
         return ResultBean.ok(bookService.listBookSettingVO());
     }
 
@@ -176,9 +184,59 @@ public class BookController extends BaseController{
         return ResultBean.ok(new PageBean<>(bookService.queryIndexList(bookId,orderBy,page,pageSize)));
     }
 
+    public static String getIpAddr(HttpServletRequest request) {
+        String ipAddress = null;
+        try {
+            ipAddress = request.getHeader("x-forwarded-for");
+            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+                ipAddress = request.getHeader("Proxy-Client-IP");
+            }
+            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+                ipAddress = request.getHeader("WL-Proxy-Client-IP");
+            }
+            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+                ipAddress = request.getRemoteAddr();
+                if (ipAddress.equals("127.0.0.1")) {
+                    // 根据网卡取本机配置的IP
+                    try {
+                        ipAddress = InetAddress.getLocalHost().getHostAddress();
+                    } catch (UnknownHostException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            // 通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
+            if (ipAddress != null) {
+                if (ipAddress.contains(",")) {
+                    return ipAddress.split(",")[0];
+                } else {
+                    return ipAddress;
+                }
+            } else {
+                return "";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
 
-
-
-
+    //插入ip
+    public  void getIp(HttpServletRequest request){
+        String ipAddr = getIpAddr(request);
+        Date date = new Date();
+        String format = new SimpleDateFormat("yyyy-MM-dd").format(date);
+        Map<String,Object> map=new HashMap<>();
+        map.put("ip",ipAddr);
+        map.put("date",format);
+        int count = viewsService.count(map);
+        if (count==0){
+            format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+            ViewsDO s = new ViewsDO();
+            s.setIp(ipAddr);
+            s.setDate(format);
+            viewsService.save(s);
+        }
+    }
 
 }
